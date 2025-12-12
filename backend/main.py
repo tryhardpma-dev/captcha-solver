@@ -1,7 +1,5 @@
 from fastapi import FastAPI
+from backend.routes.captcha import router as captcha_router
 
 app = FastAPI()
-
-@app.get("/")
-def read_root():
-    return {"message": "Hello from FastAPI"}
+app.include_router(captcha_router, prefix="/captcha")
