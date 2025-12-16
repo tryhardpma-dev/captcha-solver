@@ -1,56 +1,30 @@
-import { useState } from "react";
-import { solveCaptcha } from "../api/captcha";
-import "../styles/main.css";
+import { useRef } from "react";
 
-export default function UploadBar() {
-    const [file, setFile] = useState(null);
-    const [preview, setPreview] = useState(null);
-    const [result, setResult] = useState("");
-    const [loading, setLoading] = useState(false);
+export default function UploadBar({ file, setFile }) {
+  const inputRef = useRef();
 
-    const handleFile = (e) => {
-        const f = e.target.files[0];
-        if (!f) return;
+  const handleClick = () => inputRef.current.click();
 
-        setFile(f);
-        setPreview(URL.createObjectURL(f));
-        setResult("");
-    };
+  const handleChange = (e) => {
+    if (e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
 
-    const handleSolve = async () => {
-        if (!file) return;
-        setLoading(true);
+  return (
+    <>
+      <div className="upload" onClick={handleClick}>
+        <p>{file ? "Change image" : "Click to upload captcha"}</p>
+        {file && <img src={URL.createObjectURL(file)} alt="preview" />}
+      </div>
 
-        try {
-        const data = await solveCaptcha(file);
-        setResult(data.captcha);
-        } catch (e) {
-        alert("Error solving captcha" + e.message);
-        }
-
-        setLoading(false);
-    };
-
-    return (
-        <div className="card">
-        <h1>Captcha Solver</h1>
-
-        <label className="upload">
-            Upload Captcha
-            <input type="file" accept="image/*" onChange={handleFile} hidden />
-        </label>
-
-        {preview && <img src={preview} className="preview" />}
-
-        <button onClick={handleSolve} disabled={loading || !file}>
-            {loading ? "Detecting..." : "Solve"}
-        </button>
-
-        {result && (
-            <div className="result">
-            Result: <span>{result}</span>
-            </div>
-        )}
-        </div>
-    );
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        hidden
+        onChange={handleChange}
+      />
+    </>
+  );
 }

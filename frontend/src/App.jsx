@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { solveCaptcha } from "./api/captcha";
-import UploadBox from "./components/UploadBar.jsx";
+import UploadBox from "./components/UploadBar";
 import "./styles/main.css";
 
 export default function App() {
